@@ -1,0 +1,1 @@
+export { PersonalitiesSection } from "./PersonalitiesSection";
