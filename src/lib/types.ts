@@ -20,6 +20,11 @@ export interface Personality {
   updatedAt: Date;
 }
 
+export interface GlobalAssets {
+  bookImageUrl: string;
+  logoUrl: string;
+}
+
 export interface selectedPersonality {
   isPreselected: boolean;
 }

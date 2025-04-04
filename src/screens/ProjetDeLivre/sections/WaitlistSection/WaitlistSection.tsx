@@ -7,8 +7,10 @@ import { Card } from "../../../../components/ui/card";
 import { collection, query, where, getDocs, addDoc } from 'firebase/firestore';
 import { db } from '../../../../lib/firebase';
 import { useAuth } from "../../../../lib/hooks/useAuth";
+import {useFirebaseData} from "../../../../lib/hooks/useFirebaseData.ts";
 
 export const WaitlistSection = (): JSX.Element => {
+  const { assets } = useFirebaseData();
   const { user } = useAuth();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -133,11 +135,13 @@ export const WaitlistSection = (): JSX.Element => {
           <div className="flex flex-col md:flex-row items-center justify-center gap-5 ">
             {/* Image du livre */}
             <div className="w-full md:w-2/5 flex justify-center">
-              <img
-                  className="w-[300px] md:w-[320px]"
-                  alt="Livre Un Monde en Mouvement"
-                  src="../public/book-1.png"
-              />
+              {assets.map((asset) => (
+                  <img
+                      src={asset.bookImageUrl}
+                      alt="Livre Un Monde en Mouvement"
+                      className="w-[300px] md:w-[320px]"
+                  />
+              ))}
             </div>
 
             {/* Formulaire d'inscription */}

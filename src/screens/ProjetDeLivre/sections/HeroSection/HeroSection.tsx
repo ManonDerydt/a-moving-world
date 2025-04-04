@@ -4,9 +4,16 @@ import { AuthModal } from "../../../../components/AuthModal";
 import { auth, db } from "../../../../lib/firebase";
 import { signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
-import { Menu, X } from "lucide-react"; // Icônes pour le menu burger
+import { Menu, X } from "lucide-react";
+import {useFirebaseData} from "../../../../lib/hooks/useFirebaseData.ts";
+import {GlobalAssets} from "../../../../lib/types.ts"; // Icônes pour le menu burger
+
 
 export const HeroSection = (): JSX.Element => {
+  const { assets } = useFirebaseData();
+
+  console.log("Les assets :", assets)
+  const [loading, setLoading] = useState(true);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [firstName, setFirstName] = useState<string | null>(null);
@@ -69,12 +76,19 @@ export const HeroSection = (): JSX.Element => {
       <section id="home" className="relative w-full h-[500px] sm:h-[500px] md:h-[750px] flex flex-col bg-gradient-to-r from-[#7771d8] to-[#5a9bb5] text-center border-bottom-2">
         <div className="absolute inset-0 opacity-90"/>
 
+
         {/* HEADER */}
         <div
             className="relative z-10 flex items-center justify-between px-6 md:px-12 py-4 w-full border-b border-white">
           {/* Logo */}
           <div className="flex items-center">
-            <img className="w-8 h-8 md:w-12 md:h-12 mr-3" alt="Logo" src="./public/logo-blue.png"/>
+            {assets.map((asset) => (
+                <img
+                    src={asset.logoUrl}
+                    alt="logo"
+                    className="w-14 h-14 bg-contain mr-5"
+                />
+            ))}
             <h1 className="font-bold text-white text-lg md:text-xl">Un Monde en Mouvement</h1>
           </div>
 
@@ -179,10 +193,15 @@ export const HeroSection = (): JSX.Element => {
             </h2>
           </div>
 
+
           {/* Image du livre avec taille ajustée en mobile */}
-          <img className="mt-0 md:mt-16 relative w-[280px] sm:w-[350px] md:w-[500px] h-auto object-cover"
-               alt="Livre Un Monde en Mouvement"
-               src="../public/book-1.png"/>
+          {assets.map((asset) => (
+              <img
+                  src={asset.bookImageUrl}
+                  alt="Livre Un Monde en Mouvement"
+                  className="mt-0 md:mt-16 relative w-[280px] sm:w-[350px] md:w-[500px] h-auto object-cover"
+              />
+          ))}
 
           {/* Texte à droite */}
           <div className="text-center md:w-1/3 relative hidden sm:block">

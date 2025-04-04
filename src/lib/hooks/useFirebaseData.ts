@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { collection, query, orderBy, onSnapshot, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
-import { Personality, Question } from "../types";
+import { Personality, Question, GlobalAssets } from "../types";
 
 export const useFirebaseData = () => {
   const [personalities, setPersonalities] = useState<Personality[]>([]);
   const [selectedPersonalities, setSelectedPersonalities] = useState<Personality[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [assets, setAssets] = useState<GlobalAssets[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -62,6 +63,8 @@ export const useFirebaseData = () => {
     // Configuration des écouteurs Firestore
     const questionsQuery = query(collection(db, "questions"), orderBy("votesCount", "desc"));
     const personalitiesQuery = query(collection(db, "personalities"), orderBy("votesCount", "desc"));
+    const globalAssetsQuery = query(collection(db, "globalAssets"));
+
 
     const unsubscribeQuestions = onSnapshot(
         questionsQuery,
@@ -85,6 +88,29 @@ export const useFirebaseData = () => {
           setError("Erreur lors de l'écoute des questions");
         }
     );
+
+    const unsubscribeAssets = onSnapshot(
+        globalAssetsQuery,
+        (snapshot) => {
+          try {
+            const assetsData = snapshot.docs.map((doc) => ({
+              id: doc.id,
+              logoUrl: doc.data().logoUrl,
+              bookImageUrl: doc.data().bookImageUrl,
+            })) as GlobalAssets[];
+            setAssets(assetsData);
+
+          } catch (err) {
+            console.error("Error processing images data:", err);
+            setError("Erreur lors du traitement des images");
+          }
+        },
+        (err) => {
+          console.error("Error in personalities listener:", err);
+          setError("Erreur lors de l'écoute des personnalités");
+        }
+    );
+
 
     const unsubscribePersonalities = onSnapshot(
         personalitiesQuery,
@@ -124,6 +150,7 @@ export const useFirebaseData = () => {
     return () => {
       unsubscribeQuestions();
       unsubscribePersonalities();
+      unsubscribeAssets();
     };
   }, []);
 
@@ -131,6 +158,7 @@ export const useFirebaseData = () => {
     personalities,
     selectedPersonalities,
     questions,
+    assets,
     loading,
     error,
   };

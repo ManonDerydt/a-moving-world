@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { collection, query, where, getDocs, addDoc, updateDoc, doc, increment } from 'firebase/firestore';
 import { db, auth } from '../firebase';
-import type { Personality, Question, WaitlistEntry } from '../types';
+import type { Personality, Question, WaitlistEntry, GlobalAssets } from '../types';
 
 export const usePersonalities = () => {
   const [personalities, setPersonalities] = useState<Personality[]>([]);
+  const [assets, setAssets] = useState<GlobalAssets[]>([]);
   const [loading, setLoading] = useState(true);
 
   const voteForPersonality = async (personalityId: string) => {
@@ -24,6 +25,7 @@ export const usePersonalities = () => {
   };
 
   return { personalities, loading, voteForPersonality };
+
 };
 
 export const useQuestions = () => {

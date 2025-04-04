@@ -10,6 +10,7 @@ import { cn } from "../../../../lib/utils";
 
 export const PersonalitiesSection = (): JSX.Element => {
   const { personalities, loading } = useFirebaseData();
+  console.log("Les personnalités ->", personalities)
   const { user } = useAuth();
   const { addVote, removeVote, checkExistingVote } = useVotes();
 
